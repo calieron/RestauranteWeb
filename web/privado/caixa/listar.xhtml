@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/templates/template.xhtml">
+        <ui:define name="titulo">Manutenção de Caixa</ui:define>
+        <ui:define name="conteudo">
+            <h:form id="formListagem" prependId="false">
+                <p:growl/>
+                <p:commandButton actionListener="#{controleCaixa.novo()}" value="Novo Caixa"
+                                 icon="ui-icon-plus"
+                                 oncomplete="PF('dlg').show();"
+                                 update=":formEdicao"/>
+                <p:dataTable value="#{controleCaixa.dao.listarTodos}"
+                             var="obj">
+                    <f:facet name="header">
+                        <p:outputLabel value="Listagem dos Caixa"/>
+                    </f:facet>
+                    <f:facet name="footer">
+                        <p:outputLabel value="Total de registros: #{controleCaixa.dao.listarTodos.size()}"/>
+                    </f:facet>
+                    <p:column headerText="Registro">
+                        <p:outputLabel value="#{obj.registro}"/>
+                    </p:column>
+                    <p:column headerText="Entrada">
+                        <p:outputLabel value="#{obj.entrada}"/>
+                    </p:column>
+                    <p:column headerText="Saida">
+                        <p:outputLabel value="#{obj.saida}"/>
+                    </p:column>
+                    <p:column headerText="Fechamento">
+                        <p:outputLabel value="#{obj.fechamento}"/>
+                    </p:column>
+                    <p:column headerText="Pessoa">
+                        <p:outputLabel value="#{obj.pessoa}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Ações">
+                        <div align="center">
+                            <p:commandButton actionListener="#{controleCaixa.editar(obj.registro)}"
+                                             icon="ui-icon-pencil"
+                                             update=":formEdicao"
+                                             process="@form"
+                                             oncomplete="PF('dlg').show();"
+                                             id="btnAlterar"/>
+                            <p:commandButton actionListener="#{controleCaixa.remover(obj.registro)}"
+                                             icon="ui-icon-pencil"
+                                             update="@form"
+                                             process="@form"
+                                             id="btnExcluir"
+                                             onclick="if(!confirm('Confirma a exclusao do objeto'))
+                                                    return false"/>
+                        </div>
+                        <p:outputLabel value="#{obj.registro}"/>
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+        <ui:define name="dialogos">
+            <p:dialog widgetVar="djg" header="Edição"
+                      resizable="false" modal="true">
+                <h:form id="formEdicao" prependId="false">
+                    <p:growl/>
+                    <div align="center">
+                        <p:panelGrid columns="2">
+                            <f:facet name="footer">
+                                <div align="center">
+                                    <p:commandButton value="Salvar"
+                                                     icon="ui-icon-disk"
+                                                     actionListener="#{controleCaixa.salvar()}"
+                                                     update=":formEdicao : formListagem"
+                                                     oncomplete="if(!args.validationFailed){PF('dlg'.hide();}"/>                                    
+                                </div>
+                            </f:facet>
+                            <p:selectOneMenu>
+                            <p:outputLabel value="Registro"/>
+                            <p:inputText value="#{controleCaixa.objeto.registro}"
+                                         size="5" readonly="true"/>
+                            <p:outputLabel value="Entrada"/>
+                            <p:inputText value="#{controleCaixa.objeto.entrada}"
+                                         size="10" readonly="true"/>
+                            <p:outputLabel value="Saida" for="txtSaida"/>
+                            <p:inputText value="#{controleCaixa.objeto.saida}"
+                                         size="10" maxlength="10" id="txtSaida"/>
+                            <p:outputLabel value="Fechamento" for="txtFechamento"/>
+                            <p:inputText value="#{controleCaixa.objeto.fechamento}"
+                                         size="50" maxlength="50" id="txtFechamento"/>
+                            <p:outputLabel value="Pessoa" for="txtPessoa"/>
+                            <p:inputText value="#{controleCaixa.objeto.pessoa}"
+                                         size="14" maxlength="14" id="txtPessoa"/>
+                            <p:outputLabel value="Cidade" for="txtCidade"/>
+                            <p:inputText value="#{controleCaixa.objeto.cidade}"
+                                         size="50" maxlength="50" id="txtCidade"/>                            
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </div>
+                </h:form>
+            </p:dialog>
+        </ui:define>
+    </ui:composition>
+</html>
+
